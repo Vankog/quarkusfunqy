@@ -9,6 +9,7 @@ repositories {
 }
 
 dependencies {
+    implementation 'org.testcontainers:testcontainers:1.15.2'
     implementation 'software.amazon.awssdk:url-connection-client'
     implementation 'io.quarkus:quarkus-amazon-dynamodb'
     implementation 'io.quarkus:quarkus-amazon-lambda-http'
