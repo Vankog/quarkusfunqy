@@ -15,11 +15,29 @@ Resources:
       Runtime: java11
       CodeUri: ../build/function.zip
       MemorySize: 512
-      Policies: AWSLambdaBasicExecutionRole
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AmazonDynamoDBFullAccess
       Timeout: 15
       Events:
         HttpApiEvent:
           Type: HttpApi
+
+  funqyQuarkusBooksDynamoDb:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: vankog-funqy-books
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
 
 Outputs:
   QuarkusfunqyApi:
