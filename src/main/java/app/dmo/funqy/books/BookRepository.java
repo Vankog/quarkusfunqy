@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class BookRepository {
 
-    private static final String TABLE = "dasniko-funqy-books";
+    private static final String TABLE = "vankog-funqy-books";
 
     @Inject
     DynamoDbClient dynamoDb;

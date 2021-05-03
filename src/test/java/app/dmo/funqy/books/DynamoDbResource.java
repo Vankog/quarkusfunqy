@@ -58,7 +58,7 @@ public class DynamoDbResource implements QuarkusTestResourceLifecycleManager {
                     .build();
 
             ddb.createTable(builder -> builder
-                    .tableName("dasniko-funqy-books")
+                    .tableName("vankog-funqy-books")
                     .attributeDefinitions(AttributeDefinition.builder().attributeName("id").attributeType(ScalarAttributeType.S).build())
                     .keySchema(KeySchemaElement.builder().attributeName("id").keyType(KeyType.HASH).build())
                     .provisionedThroughput(ptb -> ptb.readCapacityUnits(100L).writeCapacityUnits(100L))
