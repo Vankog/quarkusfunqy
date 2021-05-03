@@ -1,0 +1,90 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: AWS Serverless Quarkus HTTP - quarkusfunqy-1.0.0-SNAPSHOT
+Globals:
+  Api:
+    EndpointConfiguration: REGIONAL
+    BinaryMediaTypes:
+      - "*/*"
+
+Resources:
+  funqyHttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      Auth:
+        DefaultAuthorizer: BasicLambdaAuthorizer
+        Authorizers:
+          BasicLambdaAuthorizer:
+            AuthorizerPayloadFormatVersion: 2.0
+            EnableSimpleResponses: true
+            FunctionArn: !GetAtt funqyBasicAuthorizr.Arn
+            FunctionInvokeRole: !GetAtt funqyApiGatewayInvokeLambdaRole.Arn
+            Identity:
+              Headers:
+                - Authorization
+
+  funqyApiGatewayInvokeLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: apigateway.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: funqyApiGatewayInvokeLambdaRole
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action: "lambda:InvokeFunction"
+                Resource: '*'
+
+  Quarkusfunqy:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest
+      Runtime: java11
+      CodeUri: ../build/function.zip
+      MemorySize: 512
+      Policies:
+        - AWSLambdaBasicExecutionRole
+        - AmazonDynamoDBFullAccess
+      Timeout: 15
+      Events:
+        HttpApiEvent:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref funqyHttpApi
+
+  funqyBasicAuthorizr:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: basicAuthorizr.handler
+      Runtime: nodejs12.x
+      CodeUri: ../js
+
+  funqyQuarkusBooksDynamoDb:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: vankog-funqy-books
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 1
+        WriteCapacityUnits: 1
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+
+Outputs:
+  QuarkusfunqyApi:
+    Description: URL for application
+    Value: !Sub 'https://${funqyHttpApi}.execute-api.${AWS::Region}.amazonaws.com/'
+    Export:
+      Name: QuarkusfunqyApi
