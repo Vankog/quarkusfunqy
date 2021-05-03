@@ -9,6 +9,8 @@ repositories {
 }
 
 dependencies {
+    implementation 'software.amazon.awssdk:url-connection-client'
+    implementation 'io.quarkus:quarkus-amazon-dynamodb'
     implementation 'io.quarkus:quarkus-amazon-lambda-http'
     implementation enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}")
     implementation 'io.quarkus:quarkus-funqy-http'
