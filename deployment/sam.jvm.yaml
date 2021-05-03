@@ -13,7 +13,7 @@ Resources:
     Properties:
       Handler: io.quarkus.amazon.lambda.runtime.QuarkusStreamHandler::handleRequest
       Runtime: java11
-      CodeUri: function.zip
+      CodeUri: ../build/function.zip
       MemorySize: 512
       Policies: AWSLambdaBasicExecutionRole
       Timeout: 15
