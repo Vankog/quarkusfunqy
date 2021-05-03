@@ -6,6 +6,7 @@ import org.testcontainers.containers.wait.strategy.Wait;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.http.urlconnection.UrlConnectionHttpClient;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.dynamodb.model.AttributeDefinition;
 import software.amazon.awssdk.services.dynamodb.model.KeySchemaElement;
@@ -53,6 +54,7 @@ public class DynamoDbResource implements QuarkusTestResourceLifecycleManager {
                     .httpClientBuilder(UrlConnectionHttpClient.builder())
                     .endpointOverride(new URI(endpoint))
                     .credentialsProvider(StaticCredentialsProvider.create(AwsBasicCredentials.create("dummy", "dummy")))
+                    .region(Region.EU_CENTRAL_1)
                     .build();
 
             ddb.createTable(builder -> builder
